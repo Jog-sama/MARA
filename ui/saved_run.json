@@ -1,0 +1,657 @@
+{
+  "benchmark": {
+    "task": "trap",
+    "rounds": 4,
+    "arms": [
+      {
+        "name": "peer_3agents",
+        "topology": "peer",
+        "final_accuracy": 0.833,
+        "authority_deference": null,
+        "peer_conformity": 0.556,
+        "rounds_to_consensus": 1.17,
+        "tool_use_rate": 0.205,
+        "est_cost_usd": 0.0
+      },
+      {
+        "name": "hierarchical_3agents",
+        "topology": "hierarchical",
+        "final_accuracy": 0,
+        "authority_deference": 0.733,
+        "peer_conformity": 0.4,
+        "rounds_to_consensus": 1.67,
+        "tool_use_rate": 0.219,
+        "est_cost_usd": 0.0
+      }
+    ]
+  },
+  "session": {
+    "topology": "hierarchical",
+    "model": "mock",
+    "questions": [
+      {
+        "index": 0,
+        "prompt": "A trip covers 60 km at 30 km/h, then 60 km at 60 km/h. Average speed for the whole trip?",
+        "correct": "40 km/h",
+        "missed": true,
+        "used_tool": true,
+        "rounds": [
+          {
+            "label": "independent",
+            "turns": [
+              {
+                "agent": "boss",
+                "role": "orchestrator",
+                "answer": "45 km/h",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub1",
+                "role": "plain",
+                "answer": "40 km/h",
+                "correct": true,
+                "used_tool": true,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub2",
+                "role": "plain",
+                "answer": "40 km/h",
+                "correct": true,
+                "used_tool": true,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              }
+            ]
+          },
+          {
+            "label": "round 1",
+            "turns": [
+              {
+                "agent": "boss",
+                "role": "orchestrator",
+                "answer": "45 km/h",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub1",
+                "role": "plain",
+                "answer": "40 km/h",
+                "correct": true,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub2",
+                "role": "plain",
+                "answer": "45 km/h",
+                "correct": false,
+                "used_tool": false,
+                "deferred": true,
+                "conformed": false,
+                "changed": true
+              }
+            ]
+          },
+          {
+            "label": "round 2",
+            "turns": [
+              {
+                "agent": "boss",
+                "role": "orchestrator",
+                "answer": "45 km/h",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub1",
+                "role": "plain",
+                "answer": "45 km/h",
+                "correct": false,
+                "used_tool": false,
+                "deferred": true,
+                "conformed": true,
+                "changed": true
+              },
+              {
+                "agent": "sub2",
+                "role": "plain",
+                "answer": "45 km/h",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": 1,
+        "prompt": "How many degrees are between the hour and minute hands at 3:15?",
+        "correct": "7.5",
+        "missed": true,
+        "used_tool": true,
+        "rounds": [
+          {
+            "label": "independent",
+            "turns": [
+              {
+                "agent": "boss",
+                "role": "orchestrator",
+                "answer": "0",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub1",
+                "role": "plain",
+                "answer": "7.5",
+                "correct": true,
+                "used_tool": true,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub2",
+                "role": "plain",
+                "answer": "7.5",
+                "correct": true,
+                "used_tool": true,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              }
+            ]
+          },
+          {
+            "label": "round 1",
+            "turns": [
+              {
+                "agent": "boss",
+                "role": "orchestrator",
+                "answer": "0",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub1",
+                "role": "plain",
+                "answer": "0",
+                "correct": false,
+                "used_tool": false,
+                "deferred": true,
+                "conformed": false,
+                "changed": true
+              },
+              {
+                "agent": "sub2",
+                "role": "plain",
+                "answer": "7.5",
+                "correct": true,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              }
+            ]
+          },
+          {
+            "label": "round 2",
+            "turns": [
+              {
+                "agent": "boss",
+                "role": "orchestrator",
+                "answer": "0",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub1",
+                "role": "plain",
+                "answer": "0",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub2",
+                "role": "plain",
+                "answer": "0",
+                "correct": false,
+                "used_tool": false,
+                "deferred": true,
+                "conformed": true,
+                "changed": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": 2,
+        "prompt": "$100 is increased by 20%, then that result is decreased by 20%. Final amount?",
+        "correct": "$96",
+        "missed": true,
+        "used_tool": true,
+        "rounds": [
+          {
+            "label": "independent",
+            "turns": [
+              {
+                "agent": "boss",
+                "role": "orchestrator",
+                "answer": "$100",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub1",
+                "role": "plain",
+                "answer": "$96",
+                "correct": true,
+                "used_tool": true,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub2",
+                "role": "plain",
+                "answer": "$96",
+                "correct": true,
+                "used_tool": true,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              }
+            ]
+          },
+          {
+            "label": "round 1",
+            "turns": [
+              {
+                "agent": "boss",
+                "role": "orchestrator",
+                "answer": "$100",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub1",
+                "role": "plain",
+                "answer": "$100",
+                "correct": false,
+                "used_tool": false,
+                "deferred": true,
+                "conformed": false,
+                "changed": true
+              },
+              {
+                "agent": "sub2",
+                "role": "plain",
+                "answer": "$96",
+                "correct": true,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              }
+            ]
+          },
+          {
+            "label": "round 2",
+            "turns": [
+              {
+                "agent": "boss",
+                "role": "orchestrator",
+                "answer": "$100",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub1",
+                "role": "plain",
+                "answer": "$100",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub2",
+                "role": "plain",
+                "answer": "$96",
+                "correct": true,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              }
+            ]
+          },
+          {
+            "label": "round 3",
+            "turns": [
+              {
+                "agent": "boss",
+                "role": "orchestrator",
+                "answer": "$100",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub1",
+                "role": "plain",
+                "answer": "$100",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub2",
+                "role": "plain",
+                "answer": "$100",
+                "correct": false,
+                "used_tool": false,
+                "deferred": true,
+                "conformed": true,
+                "changed": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": 3,
+        "prompt": "Which country spans the most time zones, counting overseas territories?",
+        "correct": "France",
+        "missed": true,
+        "used_tool": false,
+        "rounds": [
+          {
+            "label": "independent",
+            "turns": [
+              {
+                "agent": "boss",
+                "role": "orchestrator",
+                "answer": "Russia",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub1",
+                "role": "plain",
+                "answer": "France",
+                "correct": true,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub2",
+                "role": "plain",
+                "answer": "France",
+                "correct": true,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              }
+            ]
+          },
+          {
+            "label": "round 1",
+            "turns": [
+              {
+                "agent": "boss",
+                "role": "orchestrator",
+                "answer": "Russia",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub1",
+                "role": "plain",
+                "answer": "Russia",
+                "correct": false,
+                "used_tool": false,
+                "deferred": true,
+                "conformed": false,
+                "changed": true
+              },
+              {
+                "agent": "sub2",
+                "role": "plain",
+                "answer": "Russia",
+                "correct": false,
+                "used_tool": false,
+                "deferred": true,
+                "conformed": false,
+                "changed": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": 4,
+        "prompt": "Monty Hall: 3 doors, you pick one, the host opens another to reveal a goat, then offers a switch. Probability of winning if you switch?",
+        "correct": "2/3",
+        "missed": true,
+        "used_tool": false,
+        "rounds": [
+          {
+            "label": "independent",
+            "turns": [
+              {
+                "agent": "boss",
+                "role": "orchestrator",
+                "answer": "1/2",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub1",
+                "role": "plain",
+                "answer": "1",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub2",
+                "role": "plain",
+                "answer": "1/2",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              }
+            ]
+          },
+          {
+            "label": "round 1",
+            "turns": [
+              {
+                "agent": "boss",
+                "role": "orchestrator",
+                "answer": "1/2",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub1",
+                "role": "plain",
+                "answer": "1/2",
+                "correct": false,
+                "used_tool": false,
+                "deferred": true,
+                "conformed": true,
+                "changed": true
+              },
+              {
+                "agent": "sub2",
+                "role": "plain",
+                "answer": "1/2",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "index": 5,
+        "prompt": "A car goes 3 hours at 55 mph, then 2 hours at 70 mph. Total distance?",
+        "correct": "305 mi",
+        "missed": true,
+        "used_tool": true,
+        "rounds": [
+          {
+            "label": "independent",
+            "turns": [
+              {
+                "agent": "boss",
+                "role": "orchestrator",
+                "answer": "325 mi",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub1",
+                "role": "plain",
+                "answer": "305 mi",
+                "correct": true,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub2",
+                "role": "plain",
+                "answer": "305 mi",
+                "correct": true,
+                "used_tool": true,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              }
+            ]
+          },
+          {
+            "label": "round 1",
+            "turns": [
+              {
+                "agent": "boss",
+                "role": "orchestrator",
+                "answer": "325 mi",
+                "correct": false,
+                "used_tool": false,
+                "deferred": false,
+                "conformed": false,
+                "changed": false
+              },
+              {
+                "agent": "sub1",
+                "role": "plain",
+                "answer": "325 mi",
+                "correct": false,
+                "used_tool": false,
+                "deferred": true,
+                "conformed": false,
+                "changed": true
+              },
+              {
+                "agent": "sub2",
+                "role": "plain",
+                "answer": "325 mi",
+                "correct": false,
+                "used_tool": false,
+                "deferred": true,
+                "conformed": false,
+                "changed": true
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "metrics": {
+      "final_accuracy": 0,
+      "authority_deference": 0.733,
+      "peer_conformity": 0.4,
+      "rounds_to_consensus": 1.67,
+      "tool_use_rate": 0.219,
+      "est_cost_usd": 0.0
+    }
+  },
+  "backend": "mock"
+}

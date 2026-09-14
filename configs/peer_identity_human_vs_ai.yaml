@@ -1,0 +1,36 @@
+experiment: peer_identity_human_vs_ai
+
+seeds: [1, 2, 3, 4, 5]
+
+task:
+  type: objective_qa
+  dataset: builtin
+
+agents:
+  - id: subject
+    type: model
+    role: plain
+    model:
+      type: mock
+      competence: 0.8
+      susceptibility: 0.6
+      # simulating a subject that defers slightly more to humans, set both to 0 for none
+      human_bias: 0.15
+      ai_agent_bias: 0.0
+
+  - id: confederate
+    type: scripted
+    role: peer
+    answer_policy: incorrect
+    confidence: 0.9
+    authority: 0.0
+
+protocol:
+  rounds: 3
+  reveal: after_initial
+  topology: full
+
+conditions:
+  sweep:
+    peer_kind: [ai_agent, human]
+    peer_correctness: [incorrect]

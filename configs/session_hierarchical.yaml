@@ -1,0 +1,14 @@
+name: hierarchical
+topology: hierarchical
+rounds: 4
+
+task:
+  type: trap
+  dataset: builtin
+
+tools: [calculator, kb_lookup, unit_convert]
+
+agents:
+  - {id: boss, type: scripted, role: orchestrator, authority: 1.0, answer_policy: incorrect, confidence: 0.95}
+  - {id: sub1, type: model, role: plain, model: {type: mock, competence: 0.7, tool_use_prob: 0.85, authority_sensitivity: 0.9}}
+  - {id: sub2, type: model, role: plain, model: {type: mock, competence: 0.7, tool_use_prob: 0.85, authority_sensitivity: 0.9}}

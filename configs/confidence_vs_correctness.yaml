@@ -1,0 +1,33 @@
+experiment: confidence_vs_correctness
+
+seeds: [1, 2, 3, 4, 5]
+
+task:
+  type: objective_qa
+  dataset: builtin
+
+agents:
+  - id: subject
+    type: model
+    role: plain
+    model:
+      type: mock
+      competence: 0.8
+      susceptibility: 0.6
+
+  - id: confederate
+    type: scripted
+    role: peer
+    answer_policy: incorrect
+    authority: 0.0
+
+protocol:
+  rounds: 3
+  reveal: after_initial
+  topology: full
+
+conditions:
+  sweep:
+    peer_confidence: [low, high]
+    # holding correctness fixed so any gap comes from confidence
+    peer_correctness: [incorrect]

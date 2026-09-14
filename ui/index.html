@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deliberation Lab</title>
+<style>
+  :root{
+    --bg:#0f1419; --panel:#161d27; --raised:#1c2632; --line:#263140;
+    --ink:#d7dee7; --muted:#7c8795; --dim:#5a6472;
+    --hold:#4fc3a1;
+    --defer:#e0a24e;
+    --boss:#b191e0;
+    --conform:#6aa0d8;
+    --wrong:#d97a7a;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1100px;margin:0 auto;padding:32px 24px 80px}
+
+  header{border-bottom:1px solid var(--line);padding-bottom:22px;margin-bottom:24px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--muted)}
+  h1{font-size:30px;margin:10px 0 4px;letter-spacing:-.01em;font-weight:650}
+  .sub{color:var(--muted);font-size:14px;max-width:60ch}
+
+  .tabs{display:flex;gap:2px;margin:22px 0 6px;background:var(--panel);
+    padding:4px;border-radius:10px;width:max-content;border:1px solid var(--line)}
+  .tab{font-family:var(--mono);font-size:12px;letter-spacing:.06em;
+    text-transform:uppercase;padding:8px 16px;border-radius:7px;cursor:pointer;
+    color:var(--muted);border:0;background:transparent}
+  .tab[aria-selected=true]{background:var(--raised);color:var(--ink)}
+
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:20px;margin-top:18px}
+  .panel h2{font-size:13px;font-family:var(--mono);letter-spacing:.12em;
+    text-transform:uppercase;color:var(--muted);margin:0 0 14px;font-weight:600}
+  .controls{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field label{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--dim)}
+  .seg{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .seg button{background:transparent;border:0;color:var(--muted);padding:8px 14px;
+    font-family:var(--mono);font-size:12px;cursor:pointer}
+  .seg button[aria-pressed=true]{background:var(--raised);color:var(--ink)}
+  input,select{background:var(--bg);border:1px solid var(--line);color:var(--ink);
+    border-radius:8px;padding:8px 10px;font-family:var(--mono);font-size:13px}
+  input{min-width:230px}
+  .run{background:var(--hold);color:#08120e;border:0;border-radius:8px;
+    padding:10px 20px;font-family:var(--mono);font-size:13px;font-weight:600;
+    letter-spacing:.04em;cursor:pointer}
+  .run:disabled{opacity:.5;cursor:default}
+  .status{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:12px;min-height:16px}
+  .hidden{display:none}
+  .qline{font-family:var(--mono);font-size:13px;color:var(--ink);margin-bottom:2px}
+  .qmeta{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:16px}
+  .qmeta b{color:var(--hold);font-weight:600}
+  .round{margin-bottom:14px;opacity:0;transform:translateY(6px);
+    animation:rise .34s ease forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.round{animation:none;opacity:1;transform:none}}
+  .rlabel{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--dim);margin-bottom:7px}
+  .agents{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{border:1px solid var(--line);border-left:3px solid var(--line);
+    border-radius:8px;padding:9px 12px;min-width:150px;background:var(--raised)}
+  .chip .who{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--muted);display:flex;gap:6px;align-items:center}
+  .chip .ans{font-family:var(--mono);font-size:15px;margin-top:3px}
+  .chip.correct .ans{color:var(--hold)} .chip.wrong .ans{color:var(--wrong)}
+  .chip.boss{border-left-color:var(--boss)} .chip.boss .who{color:var(--boss)}
+  .chip.deferred{border-left-color:var(--defer)}
+  .chip.conformed{border-left-color:var(--conform)}
+  .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;padding:2px 6px;
+    border-radius:5px;margin-top:7px;display:inline-block}
+  .tag.tool{background:#1a2a2a;color:#7fd3bd}
+  .tag.def{background:#2a2214;color:var(--defer)}
+  .tag.con{background:#16222e;color:var(--conform)}
+  .dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+  .card{background:var(--raised);border:1px solid var(--line);border-radius:10px;padding:14px}
+  .card .k{font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--muted)}
+  .card .v{font-family:var(--mono);font-size:26px;margin-top:6px;font-weight:600}
+  .card.defer .v{color:var(--defer)} .card.conform .v{color:var(--conform)}
+
+  .gauge{margin-top:18px}
+  .gauge .row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .gauge .lab{font-family:var(--mono);font-size:11px;width:170px;color:var(--muted)}
+  .bar{flex:1;height:12px;background:var(--bg);border:1px solid var(--line);
+    border-radius:6px;overflow:hidden}
+  .bar span{display:block;height:100%}
+  .bar .fdef{background:var(--defer)} .bar .fcon{background:var(--conform)}
+  .gauge .val{font-family:var(--mono);font-size:12px;width:48px;text-align:right}
+  table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12.5px}
+  th,td{text-align:right;padding:9px 10px;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left;color:var(--ink)}
+  th{color:var(--muted);font-weight:500;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase}
+  td.hi{color:var(--defer)}
+
+  .legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:16px;
+    font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .legend span{display:flex;align-items:center;gap:6px}
+  .note{font-size:12px;color:var(--dim);margin-top:14px;line-height:1.6}
+  .qnav{display:flex;align-items:center;justify-content:space-between;gap:12px;
+    flex-wrap:wrap;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .qpills{display:flex;gap:6px;flex-wrap:wrap}
+  .qpill{font-family:var(--mono);font-size:12px;padding:6px 12px;border-radius:7px;
+    cursor:pointer;background:var(--raised);border:1px solid var(--line);color:var(--muted)}
+  .qpill.ok{border-left:3px solid var(--hold)}
+  .qpill.miss{border-left:3px solid var(--wrong);color:var(--wrong)}
+  .qpill[aria-selected=true]{background:var(--bg);color:var(--ink);outline:1px solid var(--dim)}
+  .qnavmeta{font-family:var(--mono);font-size:11px;color:var(--dim)}
+  .qhead{margin-bottom:14px}
+  .qbadge{font-family:var(--mono);font-size:10px;letter-spacing:.06em;padding:2px 8px;
+    border-radius:5px;margin-left:6px}
+  .qbadge.ok{background:#16261f;color:var(--hold)}
+  .qbadge.miss{background:#2a1719;color:var(--wrong)}
+  .qbadge.tool{background:#1a2a2a;color:#7fd3bd}
+  .qbadge.notool{background:var(--raised);color:var(--dim)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">multi-agent sycophancy · deliberation trace</div>
+    <h1>Deliberation Lab</h1>
+    <div class="sub">Several agents answer a task, see each other, and update over rounds.
+      Watch where a sub-agent drops a right answer to match a confident but wrong orchestrator.</div>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" id="tab-replay" role="tab" aria-selected="true" onclick="showTab('replay')">Replay</button>
+    <button class="tab" id="tab-live" role="tab" aria-selected="false" onclick="showTab('live')">Run live</button>
+  </div>
+
+  <section id="live" class="panel hidden">
+    <h2>Run a session</h2>
+    <div class="controls">
+      <div class="field">
+        <label>Topology</label>
+        <div class="seg" id="seg-topo">
+          <button aria-pressed="true" onclick="pick('topo',this,'hierarchical')">hierarchical</button>
+          <button aria-pressed="false" onclick="pick('topo',this,'peer')">peer</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Backend</label>
+        <div class="seg" id="seg-back">
+          <button aria-pressed="true" onclick="pick('back',this,'mock')">mock</button>
+          <button aria-pressed="false" onclick="pick('back',this,'openai')">openai</button>
+        </div>
+      </div>
+      <div class="field openai-only hidden">
+        <label>Model</label>
+        <select id="model"><option>gpt-4o-mini</option><option>gpt-4o</option></select>
+      </div>
+      <div class="field openai-only hidden">
+        <label>API key (stays local)</label>
+        <input id="key" type="password" placeholder="sk-...  or export OPENAI_API_KEY">
+      </div>
+      <button class="run" id="runbtn" onclick="runLive()">Run</button>
+    </div>
+    <div class="status" id="status"></div>
+    <div class="note">Mock runs are instant and simulated. An OpenAI run calls the model for
+      real, one turn per agent per round, and takes roughly a minute for the whole suite.</div>
+  </section>
+
+  <div id="result"></div>
+</div>
+
+<script>
+const state = {topo:'hierarchical', back:'mock'};
+
+function showTab(name){
+  document.getElementById('tab-replay').setAttribute('aria-selected', name==='replay');
+  document.getElementById('tab-live').setAttribute('aria-selected', name==='live');
+  document.getElementById('live').classList.toggle('hidden', name!=='live');
+  if(name==='replay') loadSaved();
+}
+function pick(group,btn,val){
+  state[group]=val;
+  [...btn.parentNode.children].forEach(b=>b.setAttribute('aria-pressed', b===btn));
+  document.querySelectorAll('.openai-only').forEach(e=>e.classList.toggle('hidden', state.back!=='openai'));
+}
+
+function fmt(v){ return (v===null||v===undefined) ? 'n/a' : v; }
+
+function chip(t){
+  const cls = ['chip'];
+  if(t.role==='orchestrator') cls.push('boss');
+  cls.push(t.correct ? 'correct' : 'wrong');
+  if(t.deferred) cls.push('deferred');
+  else if(t.conformed) cls.push('conformed');
+  const who = t.role==='orchestrator' ? 'boss ·' : t.agent;
+  let tags = '';
+  if(t.used_tool) tags += '<span class="tag tool">used tool</span> ';
+  if(t.deferred)  tags += '<span class="tag def">deferred to boss</span>';
+  else if(t.conformed) tags += '<span class="tag con">followed peers</span>';
+  const dotc = t.role==='orchestrator' ? 'var(--boss)' : (t.correct?'var(--hold)':'var(--wrong)');
+  return `<div class="${cls.join(' ')}">
+    <div class="who"><span class="dot" style="background:${dotc}"></span>${who}</div>
+    <div class="ans">${t.answer}</div>${tags?('<div>'+tags+'</div>'):''}</div>`;
+}
+
+function renderTranscript(q){
+  const rounds = q.rounds.map((r,i)=>`
+    <div class="round" style="animation-delay:${i*80}ms">
+      <div class="rlabel">${r.label}</div>
+      <div class="agents">${r.turns.map(chip).join('')}</div>
+    </div>`).join('');
+  const badge = q.missed
+    ? '<span class="qbadge miss">final: missed</span>'
+    : '<span class="qbadge ok">final: correct</span>';
+  const tool = q.used_tool
+    ? '<span class="qbadge tool">tool used</span>'
+    : '<span class="qbadge notool">no tool used</span>';
+  return `
+    <div class="qhead">
+      <div class="qline">${q.prompt}</div>
+      <div class="qmeta">correct answer <b>${q.correct}</b> &nbsp; ${badge} ${tool}</div>
+    </div>
+    ${rounds}
+    <div class="legend">
+      <span><span class="dot" style="background:var(--boss)"></span>orchestrator</span>
+      <span><span class="dot" style="background:var(--hold)"></span>correct answer</span>
+      <span><span class="dot" style="background:var(--wrong)"></span>wrong answer</span>
+      <span><span class="tag def">deferred to boss</span> caved to authority</span>
+      <span><span class="tag con">followed peers</span> conformed to majority</span>
+    </div>`;
+}
+
+function selectQuestion(i){
+  const s = window.__session; if(!s) return;
+  window.__qi = i;
+  document.querySelectorAll('.qpill').forEach((p,idx)=>p.setAttribute('aria-selected', idx===i));
+  const box = document.getElementById('qtrace');
+  if(box) box.innerHTML = renderTranscript(s.questions[i]);
+}
+
+function renderSession(s){
+  window.__session = s;
+  // opening on the first missed question
+  const firstMiss = s.questions.findIndex(q=>q.missed);
+  window.__qi = firstMiss >= 0 ? firstMiss : 0;
+
+  const pills = s.questions.map((q,i)=>
+    `<button class="qpill ${q.missed?'miss':'ok'}" aria-selected="${i===window.__qi}"
+      onclick="selectQuestion(${i})" title="${q.missed?'missed':'solved'}">Q${i+1}</button>`
+  ).join('');
+  const solved = s.questions.filter(q=>!q.missed).length;
+
+  const m = s.metrics;
+  const cards = [
+    ['final accuracy', fmt(m.final_accuracy), ''],
+    ['authority deference', fmt(m.authority_deference), 'defer'],
+    ['peer conformity', fmt(m.peer_conformity), 'conform'],
+    ['rounds to consensus', fmt(m.rounds_to_consensus), ''],
+    ['tool use rate', fmt(m.tool_use_rate), ''],
+    ['est cost (usd)', fmt(m.est_cost_usd), ''],
+  ].map(([k,v,c])=>`<div class="card ${c}"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
+  const def = m.authority_deference||0, con = m.peer_conformity||0;
+
+  setTimeout(()=>selectQuestion(window.__qi), 0);
+  return `
+  <section class="panel">
+    <h2>Deliberation trace · ${s.topology} · ${s.model}</h2>
+    <div class="qnav">
+      <div class="qpills">${pills}</div>
+      <div class="qnavmeta">${solved}/${s.questions.length} solved · green solved, red missed</div>
+    </div>
+    <div id="qtrace"></div>
+  </section>
+  <section class="panel">
+    <h2>Metrics across all questions</h2>
+    <div class="cards">${cards}</div>
+    <div class="gauge">
+      <div class="row"><div class="lab">authority deference (H1)</div>
+        <div class="bar"><span class="fdef" style="width:${(def*100).toFixed(0)}%"></span></div>
+        <div class="val">${def.toFixed(2)}</div></div>
+      <div class="row"><div class="lab">peer conformity (H3)</div>
+        <div class="bar"><span class="fcon" style="width:${(con*100).toFixed(0)}%"></span></div>
+        <div class="val">${con.toFixed(2)}</div></div>
+    </div>
+    <div class="note">Two axes measured the same way on different signals. A gap between them is the
+      authority gradient (H1); their independence is the sycophancy-vs-conformity split (H3).</div>
+  </section>`;
+}
+
+function renderBenchmark(b){
+  const cols = ['final_accuracy','authority_deference','peer_conformity','rounds_to_consensus','tool_use_rate','est_cost_usd'];
+  const head = '<th>arm</th>'+cols.map(c=>`<th>${c.replace(/_/g,' ')}</th>`).join('');
+  const rows = b.arms.map(a=>{
+    const cells = cols.map(c=>{
+      const v = fmt(a[c]);
+      const hi = c==='authority_deference' && a[c]? ' class="hi"' : '';
+      return `<td${hi}>${v}</td>`;
+    }).join('');
+    return `<tr><td>${a.name}</td>${cells}</tr>`;
+  }).join('');
+  return `<section class="panel"><h2>Benchmark · ${b.task} · ${b.rounds} rounds</h2>
+    <table><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table>
+    <div class="note">Only the hierarchical arm can show authority deference; peer has no orchestrator
+      to defer to. Compare that column across arms for H1.</div></section>`;
+}
+
+async function loadSaved(){
+  const el = document.getElementById('result');
+  el.innerHTML = '<div class="panel"><div class="status">loading saved run...</div></div>';
+  try{
+    const d = await (await fetch('/api/saved')).json();
+    if(d.error){ el.innerHTML = `<div class="panel"><div class="status">${d.error}</div></div>`; return; }
+    el.innerHTML = renderBenchmark(d.benchmark) + renderSession(d.session);
+  }catch(e){
+    el.innerHTML = `<div class="panel"><div class="status">could not load. is serve.py running? (${e})</div></div>`;
+  }
+}
+
+async function runLive(){
+  const btn = document.getElementById('runbtn'), st = document.getElementById('status');
+  const payload = {topology:state.topo, backend:state.back,
+    model:document.getElementById('model').value,
+    apiKey:document.getElementById('key').value};
+  btn.disabled = true;
+  st.textContent = state.back==='openai'
+    ? 'calling the model, this takes about a minute...' : 'running...';
+  try{
+    const r = await fetch('/api/run',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)});
+    const d = await r.json();
+    if(d.error){ st.textContent = 'error: '+d.error; }
+    else{ st.textContent = `done · ${d.topology} · ${d.model}`;
+      document.getElementById('result').innerHTML = renderSession(d); }
+  }catch(e){ st.textContent = 'request failed: '+e; }
+  btn.disabled = false;
+}
+
+loadSaved();
+</script>
+</body>
+</html>

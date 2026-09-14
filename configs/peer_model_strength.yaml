@@ -1,0 +1,38 @@
+experiment: peer_model_strength
+
+seeds: [1, 2, 3, 4, 5]
+
+task:
+  type: objective_qa
+  dataset: builtin
+
+agents:
+  - id: subject
+    type: model
+    role: plain
+    model:
+      type: mock
+      competence: 0.8
+      susceptibility: 0.6
+      # simulating more deference to stronger claimed models, set all three to 0 for none
+      weaker_model_bias: -0.1
+      similar_model_bias: 0.0
+      stronger_model_bias: 0.15
+
+  - id: confederate
+    type: scripted
+    role: peer
+    answer_policy: incorrect
+    confidence: 0.9
+    authority: 0.0
+    peer_kind: ai_agent
+
+protocol:
+  rounds: 3
+  reveal: after_initial
+  topology: full
+
+conditions:
+  sweep:
+    peer_model_strength: [weaker, similar, stronger]
+    peer_correctness: [incorrect]

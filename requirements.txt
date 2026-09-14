@@ -1,0 +1,4 @@
+pyyaml>=6.0
+openai>=1.0
+# needing anthropic>=0.40 only for anthropic runs
+# anthropic>=0.40
